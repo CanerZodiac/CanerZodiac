@@ -1,0 +1,82 @@
+import pygame
+import sys
+
+# Pygame'i başlat
+pygame.init()
+
+# Ekran boyutları
+genislik, yukseklik = 800, 600
+ekran = pygame.display.set_mode((genislik, yukseklik))
+pygame.display.set_caption("Pinpon Oyunu")
+
+# Renkler
+beyaz = (255, 255, 255)
+siyah = (0, 0, 0)
+
+# Raket ve top özellikleri
+raket_genislik, raket_yukseklik = 15, 100
+top_boyutu = 20
+raket_hiz = 10
+top_hiz_x, top_hiz_y = 7, 7
+
+# Raketler
+raket1_x, raket1_y = 30, yukseklik // 2 - raket_yukseklik // 2
+raket2_x, raket2_y = genislik - 30 - raket_genislik, yukseklik // 2 - raket_yukseklik // 2
+
+# Top
+top_x, top_y = genislik // 2, yukseklik // 2
+
+# Ana döngü
+while True:
+    for olay in pygame.event.get():
+        if olay.type == pygame.QUIT:
+            pygame.quit()
+            sys.exit()
+
+    tuşlar = pygame.key.get_pressed()
+    
+    # Raket hareketi
+    if tuşlar[pygame.K_w] and raket1_y > 0:
+        raket1_y -= raket_hiz
+    if tuşlar[pygame.K_s] and raket1_y < yukseklik - raket_yukseklik:
+        raket1_y += raket_hiz
+    if tuşlar[pygame.K_UP] and raket2_y > 0:
+        raket2_y -= raket_hiz
+    if tuşlar[pygame.K_DOWN] and raket2_y < yukseklik - raket_yukseklik:
+        raket2_y += raket_hiz
+
+    # Top hareketi
+    top_x += top_hiz_x
+    top_y += top_hiz_y
+
+    # Topun yukarı ve aşağı hareketi
+    if top_y - top_boyutu < 0 or top_y + top_boyutu > yukseklik:
+        top_hiz_y = -top_hiz_y
+
+    # Raketlerle çarpışma kontrolü
+    if (top_x - top_boyutu < raket1_x + raket_genislik and
+        top_y > raket1_y and top_y < raket1_y + raket_yukseklik):
+        top_hiz_x = -top_hiz_x
+
+    if (top_x + top_boyutu > raket2_x and
+        top_y > raket2_y and top_y < raket2_y + raket_yukseklik):
+        top_hiz_x = -top_hiz_x
+
+    # Topun ekranın kenarlarına çarpması
+    if top_x - top_boyutu < 0 or top_x + top_boyutu > genislik:
+        top_x, top_y = genislik // 2, yukseklik // 2
+        top_hiz_x, top_hiz_y = 7, 7
+
+    # Ekranı temizle
+    ekran.fill(siyah)
+
+    # Raketleri ve topu çiz
+    pygame.draw.rect(ekran, beyaz, (raket1_x, raket1_y, raket_genislik, raket_yukseklik))
+    pygame.draw.rect(ekran, beyaz, (raket2_x, raket2_y, raket_genislik, raket_yukseklik))
+    pygame.draw.circle(ekran, beyaz, (top_x, top_y), top_boyutu)
+
+    # Ekranı güncelle
+    pygame.display.flip()
+
+    # FPS ayarı
+    pygame.time.Clock().tick(60)
