@@ -1,12 +1,7 @@
 - 👋 Hi, I’m @CanerZodiac
-- 👀 I’m interested in ...Code
+- 👀 I’m interested in ...Code,
 - 🌱 I’m currently learning ...Python,JavaScript
-- 💞️ I’m looking to collaborate on ...
-- 📫 How to reach me ...
-- 😄 Pronouns: ...
-- ⚡ Fun fact: ...
 
-<!---
-CanerZodiac/CanerZodiac is a ✨ special ✨ repository because its `İnfoMe.md` (this file) appears on your GitHub profile.
-You can click the Preview link to take a look at your changes.
---->
+
+
+
