@@ -15,9 +15,11 @@ siyah = (0, 0, 0)
 
 # Raket ve top özellikleri
 raket_genislik, raket_yukseklik = 15, 100
-top_boyutu = 20
-raket_hiz = 10
+top_boyutu = 15
+raket_hiz = 15
 top_hiz_x, top_hiz_y = 7, 7
+bilgisayar_raket_hiz = 15
+hiz_artisi = 1.05  # Her çarpışmada topun hızını artırmak için çarpan
 
 # Raketler
 raket1_x, raket1_y = 30, yukseklik // 2 - raket_yukseklik // 2
@@ -35,15 +37,17 @@ while True:
 
     tuşlar = pygame.key.get_pressed()
     
-    # Raket hareketi
+    # Oyuncu raketi hareketi
     if tuşlar[pygame.K_w] and raket1_y > 0:
         raket1_y -= raket_hiz
     if tuşlar[pygame.K_s] and raket1_y < yukseklik - raket_yukseklik:
         raket1_y += raket_hiz
-    if tuşlar[pygame.K_UP] and raket2_y > 0:
-        raket2_y -= raket_hiz
-    if tuşlar[pygame.K_DOWN] and raket2_y < yukseklik - raket_yukseklik:
-        raket2_y += raket_hiz
+
+    # Bilgisayar raketi hareketi
+    if raket2_y + raket_yukseklik / 2 < top_y:
+        raket2_y += bilgisayar_raket_hiz
+    if raket2_y + raket_yukseklik / 2 > top_y:
+        raket2_y -= bilgisayar_raket_hiz
 
     # Top hareketi
     top_x += top_hiz_x
@@ -52,20 +56,30 @@ while True:
     # Topun yukarı ve aşağı hareketi
     if top_y - top_boyutu < 0 or top_y + top_boyutu > yukseklik:
         top_hiz_y = -top_hiz_y
+        top_hiz_y *= hiz_artisi  # Topun hızı artırılır
+        top_hiz_x *= hiz_artisi
 
     # Raketlerle çarpışma kontrolü
     if (top_x - top_boyutu < raket1_x + raket_genislik and
         top_y > raket1_y and top_y < raket1_y + raket_yukseklik):
         top_hiz_x = -top_hiz_x
+        top_hiz_x *= hiz_artisi  # Topun hızı artırılır
+        top_hiz_y *= hiz_artisi
 
     if (top_x + top_boyutu > raket2_x and
         top_y > raket2_y and top_y < raket2_y + raket_yukseklik):
         top_hiz_x = -top_hiz_x
+        top_hiz_x *= hiz_artisi  # Topun hızı artırılır
+        top_hiz_y *= hiz_artisi
 
     # Topun ekranın kenarlarına çarpması
-    if top_x - top_boyutu < 0 or top_x + top_boyutu > genislik:
+    if top_x - top_boyutu < 0:
         top_x, top_y = genislik // 2, yukseklik // 2
-        top_hiz_x, top_hiz_y = 7, 7
+        top_hiz_x, top_hiz_y = 7, 7  # Hızı sıfırla
+
+    if top_x + top_boyutu > genislik:
+        top_x, top_y = genislik // 2, yukseklik // 2
+        top_hiz_x, top_hiz_y = -7, -7  # Hızı sıfırla
 
     # Ekranı temizle
     ekran.fill(siyah)
