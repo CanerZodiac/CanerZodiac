@@ -13,7 +13,7 @@ pygame.display.set_caption("Pinpon Oyunu")
 beyaz = (255, 255, 255)
 siyah = (0, 0, 0)
 mavi = (0, 0, 255)
-
+sari = (255, 215, 0)
 # Raket ve top özellikleri
 raket_genislik, raket_yukseklik = 15, 100
 top_boyutu = 15
@@ -89,9 +89,9 @@ while True:
     ekran.fill(siyah)
 
     # Skorları ekrana yazdır
-    oyuncu_skor_yazi = font.render(str(oyuncu_skor), True, beyaz)
+    oyuncu_skor_yazi = font.render(str(oyuncu_skor), True, sari)
     ekran.blit(oyuncu_skor_yazi, (genislik // 4, 20))
-    bilgisayar_skor_yazi = font.render(str(bilgisayar_skor), True, beyaz)
+    bilgisayar_skor_yazi = font.render(str(bilgisayar_skor), True, sari)
     ekran.blit(bilgisayar_skor_yazi, (genislik * 3 // 4, 20))
 
     # Raketleri ve topu çiz
