@@ -12,14 +12,20 @@ pygame.display.set_caption("Pinpon Oyunu")
 # Renkler
 beyaz = (255, 255, 255)
 siyah = (0, 0, 0)
+mavi = (0, 0, 255)
 
 # Raket ve top özellikleri
 raket_genislik, raket_yukseklik = 15, 100
 top_boyutu = 15
 raket_hiz = 15
 top_hiz_x, top_hiz_y = 7, 7
-bilgisayar_raket_hiz = 15
+bilgisayar_raket_hiz = 10
 hiz_artisi = 1.05  # Her çarpışmada topun hızını artırmak için çarpan
+
+# Skorlar
+oyuncu_skor = 0
+bilgisayar_skor = 0
+font = pygame.font.Font(None, 74)
 
 # Raketler
 raket1_x, raket1_y = 30, yukseklik // 2 - raket_yukseklik // 2
@@ -36,7 +42,7 @@ while True:
             sys.exit()
 
     tuşlar = pygame.key.get_pressed()
-    
+
     # Oyuncu raketi hareketi
     if tuşlar[pygame.K_w] and raket1_y > 0:
         raket1_y -= raket_hiz
@@ -53,41 +59,45 @@ while True:
     top_x += top_hiz_x
     top_y += top_hiz_y
 
-    # Topun yukarı ve aşağı hareketi
+    # Topun yukarı ve aşağı çarpması
     if top_y - top_boyutu < 0 or top_y + top_boyutu > yukseklik:
         top_hiz_y = -top_hiz_y
-        top_hiz_y *= hiz_artisi  # Topun hızı artırılır
-        top_hiz_x *= hiz_artisi
 
     # Raketlerle çarpışma kontrolü
     if (top_x - top_boyutu < raket1_x + raket_genislik and
-        top_y > raket1_y and top_y < raket1_y + raket_yukseklik):
-        top_hiz_x = -top_hiz_x
-        top_hiz_x *= hiz_artisi  # Topun hızı artırılır
-        top_hiz_y *= hiz_artisi
+        raket1_y < top_y < raket1_y + raket_yukseklik):
+        top_hiz_x = -top_hiz_x * hiz_artisi
+        top_hiz_y = top_hiz_y * hiz_artisi
 
     if (top_x + top_boyutu > raket2_x and
-        top_y > raket2_y and top_y < raket2_y + raket_yukseklik):
-        top_hiz_x = -top_hiz_x
-        top_hiz_x *= hiz_artisi  # Topun hızı artırılır
-        top_hiz_y *= hiz_artisi
+        raket2_y < top_y < raket2_y + raket_yukseklik):
+        top_hiz_x = -top_hiz_x * hiz_artisi
+        top_hiz_y = top_hiz_y * hiz_artisi
 
     # Topun ekranın kenarlarına çarpması
     if top_x - top_boyutu < 0:
+        bilgisayar_skor += 1
         top_x, top_y = genislik // 2, yukseklik // 2
         top_hiz_x, top_hiz_y = 7, 7  # Hızı sıfırla
 
     if top_x + top_boyutu > genislik:
+        oyuncu_skor += 1
         top_x, top_y = genislik // 2, yukseklik // 2
         top_hiz_x, top_hiz_y = -7, -7  # Hızı sıfırla
 
     # Ekranı temizle
     ekran.fill(siyah)
 
+    # Skorları ekrana yazdır
+    oyuncu_skor_yazi = font.render(str(oyuncu_skor), True, beyaz)
+    ekran.blit(oyuncu_skor_yazi, (genislik // 4, 20))
+    bilgisayar_skor_yazi = font.render(str(bilgisayar_skor), True, beyaz)
+    ekran.blit(bilgisayar_skor_yazi, (genislik * 3 // 4, 20))
+
     # Raketleri ve topu çiz
     pygame.draw.rect(ekran, beyaz, (raket1_x, raket1_y, raket_genislik, raket_yukseklik))
     pygame.draw.rect(ekran, beyaz, (raket2_x, raket2_y, raket_genislik, raket_yukseklik))
-    pygame.draw.circle(ekran, beyaz, (top_x, top_y), top_boyutu)
+    pygame.draw.circle(ekran, mavi, (top_x, top_y), top_boyutu)
 
     # Ekranı güncelle
     pygame.display.flip()
